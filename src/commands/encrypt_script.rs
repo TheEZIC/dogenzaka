@@ -1,7 +1,6 @@
-use std::fs;
+use std::{fs, mem, slice};
 use std::fs::File;
 use std::io::Write;
-use encoding_rs::UTF_16LE;
 use crate::cryptographer::encrypt_dogenzaka;
 use crate::file_workers::file_process_args::FileEncryptArgs;
 use crate::clear_extension::ClearExtension;
@@ -11,11 +10,16 @@ pub fn encrypt_script(args: FileEncryptArgs) {
     println!("[Encrypting script file] {}", file_name.to_str().unwrap());
 
     let file_string = fs::read_to_string(&args.path).unwrap();
-    let file_str = file_string.into_boxed_str();
+    let mut file_utf16 = file_string.encode_utf16().collect::<Vec<u16>>();
+    file_utf16.push(0);
 
-    let mut encoder = UTF_16LE.new_encoder();
-    let mut encoded_content = vec![0u8; file_str.len()];
-    let _ = encoder.encode_from_utf8(&file_str, &mut encoded_content, false);
+    // https://stackoverflow.com/a/30838655
+    let encoded_content = unsafe {
+        slice::from_raw_parts(
+            file_utf16.as_ptr() as *const u8,
+            file_utf16.len() * mem::size_of::<u16>(),
+        )
+    }.to_vec();
 
     let encrypted_content = encrypt_dogenzaka(&args.path, &encoded_content);
 

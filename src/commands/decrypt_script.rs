@@ -12,11 +12,7 @@ pub fn decrypt_script(args: FileDecryptArgs) {
 
     let file_bytes = fs::read(&args.path).unwrap();
     let decrypted_file_bytes = decrypt_dogenzaka(&args.path, &file_bytes, args.key.as_str());
-
-    let mut decoder = UTF_16LE.new_decoder();
-    let mut decoded_content = vec![0u8; decrypted_file_bytes.len()];
-
-    let _ = decoder.decode_to_utf8(&decrypted_file_bytes, &mut decoded_content, true);
+    let (decoded_content, _encoding, _error) = UTF_16LE.decode(&decrypted_file_bytes);
 
     let mut output_path = args.output_path.clone();
 
@@ -28,5 +24,5 @@ pub fn decrypt_script(args: FileDecryptArgs) {
     println!("{}", output_path.clone().to_str().unwrap());
 
     let mut file = File::create(output_path).unwrap();
-    file.write_all(&decoded_content).unwrap();
+    file.write_all(&decoded_content.as_bytes()).unwrap();
 }
