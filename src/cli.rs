@@ -37,6 +37,7 @@ impl Cli {
                     .about("Encrypts provided dogenzaka script")
                     .arg(&path_arg)
                     .arg(&output_arg)
+                    .arg(&key_arg)
             );
 
         Cli { app }
@@ -47,31 +48,19 @@ impl Cli {
 
         match matches.subcommand() {
             Some((command, sub_matches)) => {
+                let path = Self::parse_path_arg(sub_matches);
+                let output_path = Self::parse_output_path_arg(sub_matches, &path);
+                let key = Self::parse_string_arg(sub_matches, "key");
+
+                let args = FileProcessArgs {
+                    path,
+                    output_path,
+                    key,
+                };
+
                 match command {
-                    "decrypt-script" => {
-                        let path = Self::parse_path_arg(sub_matches);
-                        let output_path = Self::parse_output_path_arg(sub_matches, &path);
-                        let key = Self::parse_string_arg(sub_matches, "key");
-
-                        let args = FileDecryptArgs {
-                            path,
-                            output_path,
-                            key,
-                        };
-
-                        decrypt_script(args);
-                    },
-                    "encrypt-script" => {
-                        let path = Self::parse_path_arg(sub_matches);
-                        let output_path = Self::parse_output_path_arg(sub_matches, &path);
-
-                        let args = FileEncryptArgs {
-                            path,
-                            output_path,
-                        };
-
-                        encrypt_script(args);
-                    },
+                    "decrypt-script" => decrypt_script(args),
+                    "encrypt-script" => encrypt_script(args),
                     _ => panic!("unknown command provided")
                 };
             }
