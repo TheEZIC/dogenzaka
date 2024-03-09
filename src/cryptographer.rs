@@ -1,4 +1,3 @@
-use std::path::PathBuf;
 use std::str;
 use rc4::{KeyInit, Rc4, StreamCipher, Key};
 use rc4::consts::{U16};

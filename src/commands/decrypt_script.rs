@@ -4,7 +4,7 @@ use std::io::Write;
 use encoding_rs::UTF_16LE;
 use crate::cryptographer::process_dogenzaka;
 use crate::file_workers::file_process_args::FileProcessArgs;
-use crate::clear_extension::ClearExtension;
+use crate::path_traits::ReplaceExtension;
 
 pub fn decrypt_script(args: FileProcessArgs) {
     let file_name = args.path.file_name().unwrap();
@@ -17,8 +17,7 @@ pub fn decrypt_script(args: FileProcessArgs) {
     let mut output_path = args.output_path.clone();
 
     if args.path == args.output_path {
-        output_path.clear_extension();
-        output_path.set_extension("d.a");
+        output_path.replace_extension("d.a");
     }
 
     println!("{}", output_path.clone().to_str().unwrap());

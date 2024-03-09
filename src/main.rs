@@ -5,7 +5,7 @@ mod cli;
 mod cryptographer;
 mod file_workers;
 mod commands;
-mod clear_extension;
+mod path_traits;
 
 fn main() -> ExitCode {
     Cli::new().run();

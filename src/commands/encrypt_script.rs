@@ -3,7 +3,7 @@ use std::fs::File;
 use std::io::Write;
 use crate::cryptographer::process_dogenzaka;
 use crate::file_workers::file_process_args::FileProcessArgs;
-use crate::clear_extension::ClearExtension;
+use crate::path_traits::ReplaceExtension;
 
 pub fn encrypt_script(args: FileProcessArgs) {
     let file_name = args.path.file_name().unwrap();
@@ -26,8 +26,7 @@ pub fn encrypt_script(args: FileProcessArgs) {
     let mut output_path = args.output_path.clone();
 
     if args.path == args.output_path {
-        output_path.clear_extension();
-        output_path.set_extension("e.a");
+        output_path.replace_extension("e.a");
     }
 
     println!("{}", output_path.clone().to_str().unwrap());
