@@ -7,6 +7,8 @@ use crate::{
     commands::{
         decrypt_script::*,
         encrypt_script::*,
+        decrypt_raw::*,
+        encrypt_raw::*,
     },
     file_workers::file_process_args::*,
 };
@@ -38,6 +40,20 @@ impl Cli {
                     .arg(&path_arg)
                     .arg(&output_arg)
                     .arg(&key_arg)
+            )
+            .subcommand(
+                Command::new("decrypt-raw")
+                    .about("Decrypts provided dogenzaka raw binary")
+                    .arg(&path_arg)
+                    .arg(&output_arg)
+                    .arg(&key_arg)
+            )
+            .subcommand(
+                Command::new("encrypt-raw")
+                    .about("Encrypts provided dogenzaka raw binary")
+                    .arg(&path_arg)
+                    .arg(&output_arg)
+                    .arg(&key_arg)
             );
 
         Cli { app }
@@ -61,6 +77,8 @@ impl Cli {
                 match command {
                     "decrypt-script" => decrypt_script(args),
                     "encrypt-script" => encrypt_script(args),
+                    "decrypt-raw" => decrypt_raw(args),
+                    "encrypt-raw" => encrypt_raw(args),
                     _ => panic!("unknown command provided")
                 };
             }

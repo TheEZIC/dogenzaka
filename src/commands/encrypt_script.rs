@@ -1,9 +1,7 @@
 use std::{fs, mem, slice};
-use std::fs::File;
-use std::io::Write;
 use crate::cryptographer::process_dogenzaka;
+use crate::file_workers::file::write_output_file;
 use crate::file_workers::file_process_args::FileProcessArgs;
-use crate::path_traits::ReplaceExtension;
 
 pub fn encrypt_script(args: FileProcessArgs) {
     let file_name = args.path.file_name().unwrap();
@@ -23,14 +21,5 @@ pub fn encrypt_script(args: FileProcessArgs) {
 
     let encrypted_content = process_dogenzaka(&encoded_content, args.key.as_str());
 
-    let mut output_path = args.output_path.clone();
-
-    if args.path == args.output_path {
-        output_path.replace_extension("e.a");
-    }
-
-    println!("{}", output_path.clone().to_str().unwrap());
-
-    let mut file = File::create(output_path).unwrap();
-    file.write_all(&encrypted_content).unwrap();
+    write_output_file(&args, &encrypted_content, "e.script.a");
 }
